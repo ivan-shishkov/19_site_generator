@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-11 col-lg-10 mx-auto pt-3 pb-3 mb-4 bg-secondary text-white">
+      <h1 class="text-center">Энциклопедия Девмана</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-11 col-lg-10 mx-auto pl-3 pl-md-0 pr-3 pr-md-0">
+      <div class="row">
+        {% for topic in topics %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <h3>{{ topic.title|escape }}</h3>
+          <ul>
+            {% for article in topic.articles %}
+            <li class="mt-2"><a href="{{ article.destination|escape }}">{{ article.title|escape }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
