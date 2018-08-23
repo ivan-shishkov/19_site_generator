@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ title|escape }}{% endblock %}
 {% block content %}
 <div class="container-fluid">
   <div class="row">
@@ -14,7 +14,7 @@
   </div>
   <div class="row">
     <div class="col-md-11 col-lg-10 mx-auto mb-3">
-      <h2 class="text-center">{{ title }}</h2>
+      <h2 class="text-center">{{ title|escape }}</h2>
     </div>
   </div>
   <div class="row">
