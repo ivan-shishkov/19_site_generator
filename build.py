@@ -2,6 +2,7 @@ import os.path
 import json
 
 from jinja2 import Environment, FileSystemLoader
+import markdown
 
 
 def load_text_data(filepath):
@@ -23,6 +24,12 @@ def get_template(templates_dir, template_filename):
     env = Environment(loader=file_loader)
 
     return env.get_template(template_filename)
+
+
+def get_markdown_converter():
+    return markdown.Markdown(
+        extensions=['markdown.extensions.codehilite'],
+    )
 
 
 def main():
