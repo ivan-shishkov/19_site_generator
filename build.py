@@ -1,5 +1,6 @@
 import os.path
 import json
+from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 import markdown
@@ -30,6 +31,17 @@ def get_markdown_converter():
     return markdown.Markdown(
         extensions=['markdown.extensions.codehilite'],
     )
+
+
+def add_destination_filepath(articles_info):
+    for article_info in articles_info:
+        base_filename, _ = Path(article_info['source']).name.split('.')
+        article_html_filename = '{}.{}'.format(base_filename, 'html')
+
+        article_info['destination'] = os.path.join(
+            os.path.dirname(article_info['source']),
+            article_html_filename,
+        )
 
 
 def main():
