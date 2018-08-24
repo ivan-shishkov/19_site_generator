@@ -2,6 +2,7 @@ import os.path
 import json
 import os
 from pathlib import Path
+import shutil
 
 from jinja2 import Environment, FileSystemLoader
 import markdown
@@ -104,6 +105,16 @@ def make_site_index_page(table_of_content, index_page_template, static_dir,
     ))
 
 
+def copy_static_files(source_dir, destination_dir):
+    if os.path.exists(destination_dir):
+        shutil.rmtree(destination_dir)
+
+    shutil.copytree(
+        src=source_dir,
+        dst=destination_dir,
+    )
+
+
 def make_site(site_config_info, articles_dir, templates_dir,
               article_template_filename, index_page_template_filename,
               static_dir, output_dir):
@@ -132,6 +143,11 @@ def make_site(site_config_info, articles_dir, templates_dir,
         ),
         static_dir=static_dir,
         output_dir=output_dir,
+    )
+
+    copy_static_files(
+        source_dir=os.path.join(templates_dir, static_dir),
+        destination_dir=os.path.join(output_dir, static_dir),
     )
 
 
