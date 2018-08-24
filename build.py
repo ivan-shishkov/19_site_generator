@@ -67,7 +67,8 @@ def get_table_of_contents(site_config_info):
 
 
 def make_site_articles(articles_info, articles_dir,
-                       article_template, markdown_converter, output_dir):
+                       article_template, markdown_converter, static_dir,
+                       output_dir):
     for article_info in articles_info:
         article_html = markdown_converter.reset().convert(
             source=load_text_data(
@@ -85,15 +86,18 @@ def make_site_articles(articles_info, articles_dir,
         article_template.stream(
             content=article_html,
             title=article_info['title'],
+            STATIC_URL=static_dir,
         ).dump(fp=os.path.join(
             output_dir,
             article_info['destination'],
         ))
 
 
-def make_site_index_page(table_of_content, index_page_template, output_dir):
+def make_site_index_page(table_of_content, index_page_template, static_dir,
+                         output_dir):
     index_page_template.stream(
         topics=table_of_content,
+        STATIC_URL=static_dir,
     ).dump(fp=os.path.join(
         output_dir,
         'index.html',
@@ -102,7 +106,7 @@ def make_site_index_page(table_of_content, index_page_template, output_dir):
 
 def make_site(site_config_info, articles_dir, templates_dir,
               article_template_filename, index_page_template_filename,
-              output_dir):
+              static_dir, output_dir):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
@@ -116,6 +120,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
             article_template_filename,
         ),
         markdown_converter=markdown_converter,
+        static_dir=os.path.join('..', static_dir),
         output_dir=output_dir,
     )
 
@@ -125,6 +130,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
             templates_dir,
             index_page_template_filename,
         ),
+        static_dir=static_dir,
         output_dir=output_dir,
     )
 
@@ -142,6 +148,7 @@ def main():
         templates_dir='templates',
         article_template_filename='article.html',
         index_page_template_filename='index.html',
+        static_dir='static',
         output_dir='rendered_site',
     )
 
