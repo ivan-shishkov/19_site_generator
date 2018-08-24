@@ -1,5 +1,6 @@
 import os.path
 import json
+import os
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
@@ -44,6 +45,27 @@ def add_destination_filepath(articles_info):
         )
 
 
+def get_table_of_contents(site_config_info):
+    topics_info = site_config_info['topics']
+    articles_info = site_config_info['articles']
+
+    table_of_contents = []
+
+    for topic_info in topics_info:
+        section = dict()
+        section['title'] = topic_info['title']
+
+        section['articles'] = list(
+            filter(
+                lambda article: article['topic'] == topic_info['slug'],
+                articles_info,
+            ),
+        )
+        table_of_contents.append(section)
+
+    return table_of_contents
+
+
 def make_site_articles(articles_info, articles_dir,
                        article_template, markdown_converter, output_dir):
     for article_info in articles_info:
@@ -69,6 +91,15 @@ def make_site_articles(articles_info, articles_dir,
         ))
 
 
+def make_site_index_page(table_of_content, index_page_template, output_dir):
+    index_page_template.stream(
+        topics=table_of_content,
+    ).dump(fp=os.path.join(
+        output_dir,
+        'index.html',
+    ))
+
+
 def make_site(site_config_info, articles_dir, templates_dir,
               article_template_filename, index_page_template_filename,
               output_dir):
@@ -85,6 +116,15 @@ def make_site(site_config_info, articles_dir, templates_dir,
             article_template_filename,
         ),
         markdown_converter=markdown_converter,
+        output_dir=output_dir,
+    )
+
+    make_site_index_page(
+        table_of_content=get_table_of_contents(site_config_info),
+        index_page_template=get_template(
+            templates_dir,
+            index_page_template_filename,
+        ),
         output_dir=output_dir,
     )
 
