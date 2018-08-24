@@ -10,6 +10,20 @@ blockquote {
   font-style: italic;
 }
 
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+code {
+  color: #c7254e;
+  background-color: #f9f2f4;
+}
+
 .codehilite .hll { background-color: #ffffcc }
 .codehilite  { background: #f0f0f0; }
 .codehilite .c { color: #008000 } /* Comment */
