@@ -24,9 +24,9 @@ def load_json_data(filepath):
 
 def get_template(templates_dir, template_filename):
     file_loader = FileSystemLoader(templates_dir)
-    env = Environment(loader=file_loader)
+    environment = Environment(loader=file_loader)
 
-    return env.get_template(template_filename)
+    return environment.get_template(template_filename)
 
 
 def get_markdown_converter():
@@ -38,11 +38,11 @@ def get_markdown_converter():
 def add_destination_filepath(articles_info):
     for article_info in articles_info:
         base_filename, _ = Path(article_info['source']).name.split('.')
-        article_html_filename = '{}.{}'.format(base_filename, 'html')
+        article_output_filename = '{}.{}'.format(base_filename, 'html')
 
         article_info['destination'] = os.path.join(
             os.path.dirname(article_info['source']),
-            article_html_filename,
+            article_output_filename,
         )
 
 
@@ -76,13 +76,13 @@ def make_site_articles(articles_info, articles_dir,
                 filepath=os.path.join(articles_dir, article_info['source']),
             ),
         )
-        article_html_dir = os.path.join(
+        article_output_dir = os.path.join(
             output_dir,
             os.path.dirname(article_info['destination']),
         )
 
-        if not os.path.exists(article_html_dir):
-            os.mkdir(article_html_dir)
+        if not os.path.exists(article_output_dir):
+            os.mkdir(article_output_dir)
 
         article_template.stream(
             content=article_html,
@@ -121,8 +121,6 @@ def make_site(site_config_info, articles_dir, templates_dir,
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    markdown_converter = get_markdown_converter()
-
     make_site_articles(
         articles_info=site_config_info['articles'],
         articles_dir=articles_dir,
@@ -130,7 +128,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
             templates_dir,
             article_template_filename,
         ),
-        markdown_converter=markdown_converter,
+        markdown_converter=get_markdown_converter(),
         static_dir=os.path.join('..', static_dir),
         output_dir=output_dir,
     )
