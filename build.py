@@ -38,7 +38,10 @@ def get_markdown_converter():
 def add_article_destination_filepath(articles_info):
     for article_info in articles_info:
         base_filename, _ = Path(article_info['source']).name.split('.')
-        article_output_filename = '{}.{}'.format(base_filename, 'html')
+        article_output_filename = '{}.{}'.format(
+            base_filename.replace(' ', ''),
+            'html',
+        )
 
         article_info['destination'] = os.path.join(
             os.path.dirname(article_info['source']),
