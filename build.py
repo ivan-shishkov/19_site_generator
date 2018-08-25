@@ -70,8 +70,8 @@ def get_table_of_contents(site_config_info):
     return table_of_contents
 
 
-def render_articles(articles_info, articles_dir, article_template,
-                    markdown_converter, static_dir, output_dir):
+def create_site_articles(articles_info, articles_dir, article_template,
+                         markdown_converter, static_dir, output_dir):
     for article_info in articles_info:
         article_html = markdown_converter.reset().convert(
             source=load_text_data(
@@ -93,8 +93,8 @@ def render_articles(articles_info, articles_dir, article_template,
         ).dump(fp=os.path.join(output_dir, article_info['destination']))
 
 
-def render_index_page(table_of_contents, index_page_template, static_dir,
-                      output_dir):
+def create_site_index_page(table_of_contents, index_page_template, static_dir,
+                           output_dir):
     index_page_template.stream(
         topics=table_of_contents,
         STATIC_URL=static_dir,
@@ -117,7 +117,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    render_articles(
+    create_site_articles(
         articles_info=site_config_info['articles'],
         articles_dir=articles_dir,
         article_template=get_template(
@@ -129,7 +129,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
         output_dir=output_dir,
     )
 
-    render_index_page(
+    create_site_index_page(
         table_of_contents=get_table_of_contents(site_config_info),
         index_page_template=get_template(
             templates_dir,
