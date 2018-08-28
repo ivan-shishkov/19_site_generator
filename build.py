@@ -64,12 +64,11 @@ def get_table_of_contents(site_config_info):
         section = dict()
         section['title'] = topic_info['title']
 
-        section['articles'] = list(
-            filter(
-                lambda article: article['topic'] == topic_info['slug'],
-                articles_info,
-            ),
-        )
+        section['articles'] = [
+            article_info
+            for article_info in articles_info
+            if article_info['topic'] == topic_info['slug']
+        ]
         table_of_contents.append(section)
 
     return table_of_contents
