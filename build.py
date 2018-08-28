@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import copy
 
 from jinja2 import Environment, FileSystemLoader
 import markdown
@@ -37,18 +38,20 @@ def get_markdown_converter():
     )
 
 
-def add_article_destination_filepath(articles_info):
-    for article_info in articles_info:
+def add_article_destination_filepath(site_config_info):
+    site_config_info_modified = copy.deepcopy(site_config_info)
+
+    for article_info in site_config_info_modified['articles']:
         base_filename, _ = Path(article_info['source']).name.split('.')
         article_output_filename = '{}.{}'.format(
             base_filename.replace(' ', ''),
             'html',
         )
-
         article_info['destination'] = os.path.join(
             os.path.dirname(article_info['source']),
             article_output_filename,
         )
+    return site_config_info_modified
 
 
 def get_table_of_contents(site_config_info):
@@ -150,12 +153,8 @@ def make_site(site_config_info, articles_dir, templates_dir,
 def main():
     site_config_info = load_json_data('config.json')
 
-    add_article_destination_filepath(
-        articles_info=site_config_info['articles']
-    )
-
     make_site(
-        site_config_info=site_config_info,
+        site_config_info=add_article_destination_filepath(site_config_info),
         articles_dir='articles',
         templates_dir='templates',
         article_template_filename='article.html',
