@@ -140,7 +140,7 @@ def make_site(site_config_info, articles_dir, templates_dir,
     )
 
     copy_static_files(
-        source_dir=os.path.join(templates_dir, static_dir),
+        source_dir=static_dir,
         destination_dir=os.path.join(output_dir, static_dir),
     )
 
