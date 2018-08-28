@@ -24,8 +24,10 @@ def load_json_data(filepath):
 
 def get_template(templates_dir, template_filename):
     file_loader = FileSystemLoader(templates_dir)
-    environment = Environment(loader=file_loader)
-
+    environment = Environment(
+        autoescape=True,
+        loader=file_loader,
+    )
     return environment.get_template(template_filename)
 
 
