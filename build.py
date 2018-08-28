@@ -54,24 +54,22 @@ def add_article_destination_filepath(site_config_info):
     return site_config_info_modified
 
 
-def get_table_of_contents(site_config_info):
-    topics_info = site_config_info['topics']
-    articles_info = site_config_info['articles']
-
-    table_of_contents = []
-
-    for topic_info in topics_info:
-        section = dict()
-        section['title'] = topic_info['title']
-
-        section['articles'] = [
+def get_topic_articles(topic_info, articles_info):
+    return {
+        'title': topic_info['title'],
+        'articles': [
             article_info
             for article_info in articles_info
             if article_info['topic'] == topic_info['slug']
-        ]
-        table_of_contents.append(section)
+        ],
+    }
 
-    return table_of_contents
+
+def get_table_of_contents(site_config_info):
+    return [
+        get_topic_articles(topic_info, site_config_info['articles'])
+        for topic_info in site_config_info['topics']
+    ]
 
 
 def create_site_articles(articles_info, articles_dir, article_template,
