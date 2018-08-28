@@ -9,7 +9,9 @@ Online version of the site is hosted on GitHub Pages and available [here](https:
 
 # Quickstart
 
-All the site's templates is located in the `templates/` directory (including static files - styles, images, icons).
+All the site's templates is located in the `templates/` directory.
+
+All the static files (styles, images, icons) is located in the `static/` directory.
 
 All the Markdown source files with articles is located in the `articles/` directory.
 
