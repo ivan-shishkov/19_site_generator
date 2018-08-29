@@ -72,27 +72,21 @@ def get_table_of_contents(site_config_info):
     ]
 
 
-def create_site_articles(articles_info, articles_dir, article_template,
-                         markdown_converter, static_dir, output_dir):
-    for article_info in articles_info:
-        article_html = markdown_converter.reset().convert(
-            source=load_text_data(
-                filepath=os.path.join(articles_dir, article_info['source']),
-            ),
-        )
-        article_output_dir = os.path.join(
-            output_dir,
-            os.path.dirname(article_info['destination']),
-        )
+def create_site_article(article_html, article_info, article_template,
+                        static_dir, output_dir):
+    article_output_dir = os.path.join(
+        output_dir,
+        os.path.dirname(article_info['destination']),
+    )
 
-        if not os.path.exists(article_output_dir):
-            os.mkdir(article_output_dir)
+    if not os.path.exists(article_output_dir):
+        os.mkdir(article_output_dir)
 
-        article_template.stream(
-            content=article_html,
-            title=article_info['title'],
-            STATIC_URL=static_dir,
-        ).dump(fp=os.path.join(output_dir, article_info['destination']))
+    article_template.stream(
+        content=article_html,
+        title=article_info['title'],
+        STATIC_URL=static_dir,
+    ).dump(fp=os.path.join(output_dir, article_info['destination']))
 
 
 def create_site_index_page(table_of_contents, index_page_template, static_dir,
@@ -119,17 +113,29 @@ def make_site(site_config_info, articles_dir, templates_dir,
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    create_site_articles(
-        articles_info=site_config_info['articles'],
-        articles_dir=articles_dir,
-        article_template=get_template(
-            templates_dir,
-            article_template_filename,
-        ),
-        markdown_converter=get_markdown_converter(),
-        static_dir=os.path.join('..', static_dir),
-        output_dir=output_dir,
+    markdown_converter = get_markdown_converter()
+
+    article_template = get_template(
+        templates_dir,
+        article_template_filename,
     )
+
+    for article_info in site_config_info['articles']:
+        source_article_content = load_text_data(
+            filepath=os.path.join(
+                articles_dir,
+                article_info['source'],
+            ),
+        )
+        create_site_article(
+            article_html=markdown_converter.reset().convert(
+                source=source_article_content,
+            ),
+            article_info=article_info,
+            article_template=article_template,
+            static_dir=os.path.join('..', static_dir),
+            output_dir=output_dir,
+        )
 
     create_site_index_page(
         table_of_contents=get_table_of_contents(site_config_info),
@@ -140,7 +146,6 @@ def make_site(site_config_info, articles_dir, templates_dir,
         static_dir=static_dir,
         output_dir=output_dir,
     )
-
     copy_static_files(
         source_dir=static_dir,
         destination_dir=os.path.join(output_dir, static_dir),
